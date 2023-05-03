@@ -13,7 +13,7 @@ ip_list = []
 
 def get_ip(task):
     """
-    Parse IP addresses from all interfaces and append to ip_list
+    Extract IP addresses from all interfaces and add them to the list called `ip_list`.
     """
     response = task.run(
         task=send_command, command="show interfaces", severity_level=logging.DEBUG
@@ -31,8 +31,8 @@ def get_ip(task):
 
 def locate_ip(task):
     """
-    Pull all interfaces information
-    Identify the interface and Device configured with duplicate address
+    Retrieve details about all interfaces.
+    This task aims to locate the network interface and device that has been assigned a duplicate IP address.
     """
     response = task.run(
         task=send_command, command="show interfaces", severity_level=logging.DEBUG
@@ -52,9 +52,9 @@ def locate_ip(task):
 nr.run(task=get_ip)
 targets = [k for k, v in Counter(ip_list).items() if v > 1]
 if targets:
-    rprint("[red]ALERT: DUPLICATES DETECTED![/red]")
+    rprint("[red]ALERT: DUPLICATES IP DETECTED![/red]")
     rprint(targets)
-    rprint("\n[cyan]Locating addresses in topology...[/cyan]")
+    rprint("\n[cyan]Searching IP addresses in topology...[/cyan]")
     nr.run(task=locate_ip)
 else:
-    rprint("[green]SCAN COMPLETED - NO DUPLICATES DETECTED[/green]")
+    rprint("[green]SCAN FINISHED - NO DUPLICATES IP DETECTED[/green]")
